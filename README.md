@@ -15,4 +15,5 @@
 `npm run start` — запускает сервер   
 `npm run dev` — запускает сервер с hot-reload
 
-Проектом занимался GorillaDevQ
+Проектом занимался <a href="https://github.com/GorillaDevq">GorillaDevQ</a>
+Ссылка на репозиторий <a href="https://github.com/GorillaDevq/express-mesto-gha"></a>

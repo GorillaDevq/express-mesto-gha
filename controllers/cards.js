@@ -4,7 +4,7 @@ const getCards = (req, res) => {
   Card.find({})
     .populate(['likes', 'owner'])
     .then((cardList) => res.send(cardList))
-    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }));
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 };
 
 const deleteCard = (req, res) => {
@@ -16,7 +16,7 @@ const deleteCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные для удаления карточки' });
-      else res.status(500).send({ message: 'Ошибка по умолчанию' });
+      else res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -27,7 +27,7 @@ const createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
-      else res.status(500).send({ message: 'Ошибка по умолчанию' });
+      else res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -43,7 +43,7 @@ const putLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
-      else res.status(500).send({ message: 'Ошибка по умолчанию' });
+      else res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -59,7 +59,7 @@ const deleteLike = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка' });
-      else res.status(500).send({ message: 'Ошибка по умолчанию' });
+      else res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 

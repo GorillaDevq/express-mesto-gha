@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/GorillaDevq/express-mesto-gha.git"
   },
-  "author": "",
+  "author": "GorillaDevQ",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/GorillaDevq/express-mesto-gha/issues"
