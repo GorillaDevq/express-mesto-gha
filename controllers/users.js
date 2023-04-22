@@ -14,7 +14,7 @@ const getUser = (req, res) => {
       else res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+      if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
       else res.status(500).send({ message: 'Ошибка по умолчанию' });
     });
 };

@@ -14,7 +14,10 @@ const deleteCard = (req, res) => {
       if (!card) res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       else res.send(card);
     })
-    .catch(() => res.status(500).send({ message: 'Ошибка по умолчанию' }));
+    .catch((err) => {
+      if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные для удаления карточки' });
+      else res.status(500).send({ message: 'Ошибка по умолчанию' });
+    });
 };
 
 const createCard = (req, res) => {
