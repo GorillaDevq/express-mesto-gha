@@ -9,10 +9,17 @@ const getCards = (req, res) => {
 
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
+    .populate('owner')
     .then((card) => {
       if (!card) res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
-      else res.send(card);
+      if (req.user._id === card.owner._id) {
+        Card.deleteOne(req.user._id)
+          .then((cardInfo) => res.send(cardInfo))
+          .catch((err) => {
+            if (err.name === 'CastError') res.status(403).send({ message: 'Нет доступа' });
+          });
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные для удаления карточки' });
