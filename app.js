@@ -29,9 +29,9 @@ app.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-    name: Joi.string().min(2).max(30) || null || undefined,
-    about: Joi.string().min(2).max(30) || null || undefined,
-    avatar: Joi.string() || null || undefined,
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string(),
   }),
 }), createUser);
 
@@ -43,8 +43,6 @@ app.use('/', require('./routes/card'));
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Ошибка 404' });
 });
-
-app.use(errors());
 
 function formatError(error) {
   return {
@@ -64,5 +62,7 @@ app.use((err, req, res, next) => { // eslint-disable-line
 
   res.status(500).send(formattedError);
 });
+
+app.use(errors());
 
 app.listen(PORT);

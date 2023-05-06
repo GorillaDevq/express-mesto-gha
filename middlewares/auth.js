@@ -6,7 +6,7 @@ const handleAuthError = (res) => {
     .send({ message: 'Необходима авторизация' });
 };
 
-module.exports = (req, res, next) => {
+module.exports = (req, res, next) => { // eslint-disable-line
   let payload;
 
   try {
