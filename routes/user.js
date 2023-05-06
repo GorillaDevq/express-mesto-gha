@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+// eslint-disable-next-line
+const regex = /^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$/;
 
 const {
   getUser,
@@ -21,7 +23,7 @@ router.patch('/users/me', celebrate({
 
 router.patch('/users/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().required(),
+    avatar: Joi.string().required().pattern(regex),
   }),
 }), updateAvatar);
 

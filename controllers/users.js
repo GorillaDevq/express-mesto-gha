@@ -36,10 +36,10 @@ const createUser = (req, res) => {
       name,
       about,
       avatar,
-      email,
       password: hash,
+      email,
     }))
-    .then((user) => res.send(user))
+    .then((user) => res.status(201).send(user))
     .catch((err) => {
       if (err.code === 11000) res.status(409).send({ message: 'Указан существующий email' });
       if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });

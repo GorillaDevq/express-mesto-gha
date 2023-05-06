@@ -6,6 +6,8 @@ const { celebrate, Joi, errors } = require('celebrate');
 
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
+// eslint-disable-next-line
+const regex = /^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$/;
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -55,8 +57,7 @@ function formatError(error) {
   };
 }
 
-app.use((err, req, res, next) => {
-  console.error(err);
+app.use((err, req, res, next) => { // eslint-disable-line
   const formattedError = formatError(err);
 
   if (err.message === 'Validation failed') res.status(400).send(formattedError);
