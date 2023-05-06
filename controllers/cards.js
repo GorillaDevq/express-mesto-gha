@@ -13,13 +13,11 @@ const deleteCard = (req, res) => {
     .populate('owner')
     .then((card) => {
       if (!card) res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
-      if (req.user._id === card.owner._id) {
-        Card.deleteOne(req.user._id)
-          .then((cardInfo) => res.send(cardInfo))
-          .catch((err) => {
-            if (err.name === 'CastError') res.status(403).send({ message: 'Нет доступа' });
-          });
-      }
+      if (String(req.user._id) === String(card.owner._id)) {
+        Card.deleteOne()
+          .then(() => res.send({ message: 'Карточка успешно удалена' }))
+          .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+      } else res.status(403).send({ message: 'Нет доступа' });
     })
     .catch((err) => {
       if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные для удаления карточки' });
