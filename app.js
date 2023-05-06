@@ -44,6 +44,8 @@ app.use('*', (req, res) => {
   res.status(404).send({ message: 'Ошибка 404' });
 });
 
+app.use(errors());
+
 function formatError(error) {
   return {
     message: 'Произошла ошибка на сервере',
@@ -62,7 +64,5 @@ app.use((err, req, res, next) => { // eslint-disable-line
 
   res.status(500).send(formattedError);
 });
-
-app.use(errors());
 
 app.listen(PORT);
