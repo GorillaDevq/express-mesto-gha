@@ -39,7 +39,11 @@ const createUser = (req, res) => {
       password: hash,
       email,
     }))
-    .then((user) => res.status(201).send(user))
+    .then((user) => {
+      const { _id, name, about, avatar, email } = user; // eslint-disable-line
+      const newUser = { _id, name, about, avatar, email }; // eslint-disable-line
+      res.status(201).send(newUser); // Select: false не отрабатывает
+    })
     .catch((err) => {
       if (err.code === 11000) res.status(409).send({ message: 'Указан существующий email' });
       if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
