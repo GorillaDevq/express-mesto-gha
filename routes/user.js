@@ -14,6 +14,12 @@ const {
 router.get('/users', getUsers);
 router.get('/users/me', getUserInfo);
 
+router.get('/users/:id', celebrate({
+  params: Joi.object().keys({
+    id: Joi.string().required(),
+  }),
+}), getUser);
+
 router.patch('/users/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
@@ -26,11 +32,5 @@ router.patch('/users/me/avatar', celebrate({
     avatar: Joi.string().required().pattern(regex),
   }),
 }), updateAvatar);
-
-router.get('/users/:userId', celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().hex().required(),
-  }),
-}), getUser);
 
 module.exports = router;
