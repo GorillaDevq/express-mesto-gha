@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
@@ -41,6 +41,8 @@ app.use('/', require('./routes/card'));
 app.use('*', (req, res) => {
   res.status(404).send({ message: 'Ошибка 404' });
 });
+
+app.use(errors());
 
 function formatError(error) {
   return {

@@ -41,6 +41,7 @@ const createUser = (req, res) => {
     }))
     .then((user) => res.send(user))
     .catch((err) => {
+      if (err.code === 11000) res.status(409).send({ message: 'Указан существующий email' });
       if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
       else res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
