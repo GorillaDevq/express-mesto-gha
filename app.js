@@ -55,8 +55,9 @@ function formatError(error) {
 
 app.use((err, req, res, next) => {
   console.error(err);
-
   const formattedError = formatError(err);
+
+  if (err.message === 'Validation failed') res.status(400).send(formattedError);
 
   res.status(500).send(formattedError);
 });
