@@ -8,8 +8,6 @@ const { errors } = require('celebrate');
 const regex = /^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$/;
 const NotFoundError = require('./errors/NotFoundError');
 
-const ValidationError = require('./errors/ValidationError');
-
 const { PORT = 3000 } = process.env;
 const app = express();
 
@@ -26,8 +24,10 @@ app.use('*', (req, res, next) => next(new NotFoundError('Ошибка 404')));
 app.use(errors());
 
 app.use((err, req, res, next) => {
-  if (err.message === 'Validation failed') next(new ValidationError('Переданны некоректные данные'));
-  return res.status(500).send({ message: 'Ошибка на сервере' });
+  if (err.statusCode) res.status(err.statusCode).send({ message: err.message });
+  else res.status(500).send({ message: 'На сервере произошла ошибка.' });
+
+  next();
 });
 
 app.listen(PORT);
