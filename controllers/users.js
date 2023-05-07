@@ -2,28 +2,32 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const getUsers = (req, res) => {
+const ValidationError = require('../errors/ValidationError');
+const NotFoundError = require('../errors/NotFoundError');
+const ConflictError = require('../errors/ConflictError');
+
+const getUsers = (req, res, next) => {
   User.find({})
     .then((users) => {
       res.send(users);
     })
-    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
+    .catch(next);
 };
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   const { id } = req.params;
   User.findById(id)
     .then((user) => {
-      if (!user) res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      if (!user) next(new NotFoundError('Пользователь по указанному _id не найден'));
       else res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
-      else res.status(500).send({ message: 'На сервере произошла ошибка' });
+      if (err.name === 'CastError') next(new ValidationError('Переданы некорректные данные для поиска пользователя'));
+      else next(err);
     });
 };
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const {
     name,
     about,
@@ -45,13 +49,13 @@ const createUser = (req, res) => {
       res.status(201).send(newUser); // Select: false не отрабатывает
     })
     .catch((err) => {
-      if (err.code === 11000) res.status(409).send({ message: 'Указан существующий email' });
-      if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
-      else res.status(500).send({ message: 'На сервере произошла ошибка' });
+      if (err.code === 11000) next(new ConflictError('Указан существующий email'));
+      if (err.name === 'ValidationError') next(new ValidationError('Переданы некорректные данные при создании пользователя'));
+      else next(err);
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -62,11 +66,11 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      res.status(401).send({ message: err.message });
+      next(err);
     });
 };
 
-const updateProfile = (req, res) => {
+const updateProfile = (req, res, next) => {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(req.user._id, { name, about }, {
@@ -74,12 +78,12 @@ const updateProfile = (req, res) => {
     runValidators: true,
   })
     .then((user) => {
-      if (!user) res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      if (!user) next(new NotFoundError('Пользователь по указанному _id не найден'));
       else res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля' });
-      else res.status(500).send({ message: 'На сервере произошла ошибка' });
+      if (err.name === 'ValidationError') next(new ValidationError('Переданы некорректные данные при обновлении профиля'));
+      else next(err);
     });
 };
 
@@ -91,20 +95,18 @@ const updateAvatar = (req, res, next) => {
     runValidators: true,
   })
     .then((user) => {
-      if (!user) res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
+      if (!user) next(new NotFoundError('Пользователь по указанному _id не найден'));
       else res.send(user);
     })
-    .catch((err) => {
-      next(err);
-    });
+    .catch(next);
 };
 
-const getUserInfo = (req, res) => {
+const getUserInfo = (req, res, next) => {
   User.findById(req.user)
     .then((user) => {
       res.send(user);
     })
-    .catch((err) => res.send({ message: err }));
+    .catch(next);
 };
 
 module.exports = {

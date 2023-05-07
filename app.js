@@ -8,6 +8,9 @@ const auth = require('./middlewares/auth');
 const { createUser, login } = require('./controllers/users');
 // eslint-disable-next-line
 const regex = /^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$/;
+const NotFoundError = require('./errors/NotFoundError');
+const ServerError = require('./errors/ServerError');
+const ValidationError = require('./errors/ValidationError');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -40,29 +43,13 @@ app.use(auth);
 app.use('/', require('./routes/user'));
 app.use('/', require('./routes/card'));
 
-app.use('*', (req, res) => {
-  res.status(404).send({ message: 'Ошибка 404' });
-});
+app.use('*', (req, res, next) => next(new NotFoundError('Ошибка 404')));
 
 app.use(errors());
 
-function formatError(error) {
-  return {
-    message: 'Произошла ошибка на сервере',
-    error: {
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-    },
-  };
-}
-
-app.use((err, req, res, next) => { // eslint-disable-line
-  const formattedError = formatError(err);
-
-  if (err.message === 'Validation failed') res.status(400).send(formattedError);
-
-  res.status(500).send(formattedError);
+app.use((err, req, res, next) => {
+  if (err.message === 'Validation failed') next(new ValidationError('Переданны некоректные данные'));
+  return new ServerError('Произошла ошибка на сервере');
 });
 
 app.listen(PORT);
