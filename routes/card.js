@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 
 // eslint-disable-next-line
 const regex = /^(http|https):\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}(\/\S*)?$/;
+const auth = require('../middlewares/auth');
 
 const {
   getCards,
@@ -18,25 +19,25 @@ router.delete('/cards/:cardId', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().required().hex(),
   }),
-}), deleteCard);
+}), auth, deleteCard);
 
 router.post('/cards', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().pattern(regex),
   }),
-}), createCard);
+}), auth, createCard);
 
 router.put('/cards/:cardId/likes', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().hex().required(),
   }),
-}), putLike);
+}), auth, putLike);
 
 router.delete('/cards/:cardId/likes', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().hex().required(),
   }),
-}), deleteLike);
+}), auth, deleteLike);
 
 module.exports = router;

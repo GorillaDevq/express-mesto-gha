@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 
-module.exports = (req, res, next) => { // eslint-disable-line
-
+module.exports = (req, res, next) => {
   let payload;
 
   try {
