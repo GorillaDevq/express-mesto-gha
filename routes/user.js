@@ -36,7 +36,7 @@ router.patch('/users/me/avatar', auth, celebrate({
   }),
 }), updateAvatar);
 
-router.post('/signup', auth, celebrate({
+router.post('/signup', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
@@ -46,7 +46,7 @@ router.post('/signup', auth, celebrate({
   }),
 }), createUser);
 
-router.post('/signin', auth, celebrate({
+router.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
