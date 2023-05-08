@@ -17,7 +17,7 @@ const deleteCard = (req, res, next) => {
     .populate('owner')
     .then((card) => {
       if (!card) next(new NotFoundError('Карточка с указанным _id не найдена'));
-      if (String(req.user._id) === String(card.owner._id)) {
+      else if (String(req.user._id) === String(card.owner._id)) {
         Card.deleteOne()
           .then(() => res.send({ message: 'Карточка успешно удалена' }))
           .catch(next);

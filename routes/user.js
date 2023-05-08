@@ -17,26 +17,26 @@ const {
 router.get('/users', auth, getUsers);
 router.get('/users/me', auth, getUserInfo);
 
-router.get('/users/:id', celebrate({
+router.get('/users/:id', auth, celebrate({
   params: Joi.object().keys({
     id: Joi.string().required().hex().length(24),
   }),
-}), auth, getUser);
+}), getUser);
 
-router.patch('/users/me', celebrate({
+router.patch('/users/me', auth, celebrate({
   body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
+    name: Joi.string().min(2).max(30).required(),
+    about: Joi.string().min(2).max(30).required(),
   }),
-}), auth, updateProfile);
+}), updateProfile);
 
-router.patch('/users/me/avatar', celebrate({
+router.patch('/users/me/avatar', auth, celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().required().pattern(regex),
   }),
-}), auth, updateAvatar);
+}), updateAvatar);
 
-router.post('/signup', celebrate({
+router.post('/signup', auth, celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
@@ -46,7 +46,7 @@ router.post('/signup', celebrate({
   }),
 }), createUser);
 
-router.post('/signin', celebrate({
+router.post('/signin', auth, celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
